@@ -24,11 +24,11 @@ jobs:
       - run:
           name: Install hatch
           command: |
-						sudo pip install hatch
-						sudo pip install flake8
-						flake8 .
-						hatch install
-						hatch test
+            sudo pip install hatch
+            sudo pip install flake8
+            flake8 .
+            hatch install
+            hatch test
       # - save_cache:
       #     paths:
       #       - ./venv
