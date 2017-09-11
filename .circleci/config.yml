@@ -24,7 +24,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            python -m pip install flake8
+            pip install hatch
 
       # - save_cache:
       #     paths:
