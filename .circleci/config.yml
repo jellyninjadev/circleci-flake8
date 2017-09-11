@@ -28,12 +28,12 @@ jobs:
             sudo pip install flake8
 
       - run:
-        name: Install requrements
-        command: hatch install
+          name: Install requrements
+          command: hatch install
       
       - run:
-        name: Check code style
-        command: flake8 .
+          name: Check code style
+          command: flake8 .
 
       # - save_cache:
       #     paths:
