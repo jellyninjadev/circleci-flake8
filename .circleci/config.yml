@@ -22,9 +22,24 @@ jobs:
           - v1-dependencies-
 
       - run:
-          name: install dependencies
-          command: |
-            sudo pip install hatch
+          name: Install hatch
+          command: sudo pip install hatch
+
+			- run:
+					name: Install flake8
+					command: sudo pip install flake8
+
+			- run:
+					name: Linting
+					command: flake8 .
+
+			- run:
+					name: Install deps
+					command: hatch install
+
+			- run:
+					name: Run tests
+					command: hatch test
 
       # - save_cache:
       #     paths:
