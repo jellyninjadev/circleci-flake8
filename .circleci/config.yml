@@ -22,13 +22,19 @@ jobs:
           - v1-dependencies-
 
       - run:
-          name: Install hatch
+          name: Install hatch and flake
           command: |
             sudo pip install hatch
             sudo pip install flake8
-            flake8 .
-            hatch install
-            hatch test
+
+      - run:
+        name: Install requrements
+        command: hatch install
+      
+      - run:
+        name: Check code style
+        command: flake8 .
+
       # - save_cache:
       #     paths:
       #       - ./venv
