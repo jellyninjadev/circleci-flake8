@@ -1,0 +1,11 @@
+*.log
+*.pyc
+.cache/
+.coverage
+.idea/
+.vscode/
+circleci_pep8.egg-info/
+build/
+dist/
+docs/build/
+wheelhouse/
