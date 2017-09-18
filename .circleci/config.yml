@@ -54,11 +54,11 @@ jobs:
           destination: test-reports
 
       - deploy:
-        name: Deploy master
-        command: |
-          if [ "${CIRCLE_BRANCH}" == master ]; then
-            . env/bin/activate
-            echo "Deploying to aws"
-          else
-            echo "Not master to deploying"
-          fi
+          name: Deploy master
+          command: |
+            if [ "${CIRCLE_BRANCH}" == master ]; then
+              . env/bin/activate
+              echo "Deploying to aws"
+            else
+              echo "Not master to deploying"
+            fi
