@@ -1,52 +1,84 @@
-# Python CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-python/ for more details
-#
 version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: circleci/python:3.6.1
-    working_directory: ~/circleci-flake8
-
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "requirements.txt" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
       - run:
-          name: Install hatch and flake
+          name: Initialize virtual environment
           command: |
-            sudo pip install hatch
-            sudo pip install flake8
+            python3 -m venv env
+            . env/bin/activate
 
       - run:
-          name: Install requrements
-          command: hatch install
+          name: Install requirements
+          command: |
+            . env/bin/activate
+            pip install -r requirements.txt
       
-      - run:
-          name: Check code style
-          command: flake8 .
+      - save_cache:
+          paths:
+            - ./env
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
 
-      # - save_cache:
-      #     paths:
-      #       - ./venv
-      #     key: v1-dependencies-{{ checksum "requirements.txt" }}
+      - run:
+          name: Autoformat
+          command: |
+            . env/bin/activate
+            autopep8 --in-place --aggressive --aggressive --recursive circleci_pep8
+
+      - run:
+          name: Unused imports and variables
+          command: |
+            . env/bin/activate
+            autoflake --in-place -r --remove-all-unused-imports --remove-unused-variables circleci_pep8
+
+      - run:
+          name: Linting
+          command: |
+            . env/bin/activate
+            flake8 circleci_pep8
         
-      # run tests!
-      # - run:
-      #     name: run tests
-      #     command: |
-      #       . venv/bin/activate
-      #       python manage.py test
+      - run:
+          name: Tests
+          command: |
+            . env/bin/activate
+            python -m unittest
 
       - store_artifacts:
           path: test-reports
           destination: test-reports
+
+      # - deploy:
+      #     name: Deploy master
+      #     command: |
+      #       if [ "${CIRCLE_BRANCH}" == master ]; then
+      #         . env/bin/activate
+      #         echo "Deploying to aws"
+      #       else
+      #         echo "Not master to deploying"
+      #       fi
+
+  deploy:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - run:
+        name: HelloWorld
+        command: echo "Hello World"
+workflows:
+  version: 2
+  dev:
+    jobs:
+      - build
+      - deploy:
+        requires:
+          - build
+        filters:
+          branches:
+            only:
+              - master
