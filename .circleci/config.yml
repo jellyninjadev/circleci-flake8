@@ -37,24 +37,8 @@ jobs:
             . env/bin/activate
             autoflake --in-place -r --remove-all-unused-imports --remove-unused-variables circleci_pep8
 
-      - run:
-          name: Linting
-          command: |
-            . env/bin/activate
-            flake8 circleci_pep8
-        
-      - run:
-          name: Tests
-          command: |
-            . env/bin/activate
-            python -m unittest
-
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
-
       # - deploy:
-      #     name: Deploy master
+      #     name: Deploy master in sequential workflow
       #     command: |
       #       if [ "${CIRCLE_BRANCH}" == master ]; then
       #         . env/bin/activate
@@ -62,6 +46,26 @@ jobs:
       #       else
       #         echo "Not master to deploying"
       #       fi
+
+  lint:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - run:
+          name: Linting
+          command: |
+            . env/bin/activate
+            flake8 circleci_pep8
+          
+  test:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - run:
+          name: Tests
+          command: |
+            . env/bin/activate
+            python -m unittest
 
   deploy:
     docker:
@@ -75,6 +79,12 @@ workflows:
   dev:
     jobs:
       - build
+      - lint:
+        requires:
+          - build
+      - test:
+        requires:
+          - build
       - deploy:
           requires:
             - build
