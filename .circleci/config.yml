@@ -41,6 +41,11 @@ jobs:
             . env/bin/activate
             autoflake --in-place -r --remove-all-unused-imports --remove-unused-variables circleci_pep8
 
+      - persist_to_workspace:
+          root: /tmp/env
+          paths:
+            - env/*
+
       # - deploy:
       #     name: Deploy master in sequential workflow
       #     command: |
@@ -56,7 +61,8 @@ jobs:
   lint:
     <<: *defaults
     steps:
-      - run: python3 -m venv env
+      - attach_workspace:
+          at: /tmp/env
       - run:
           name: Linting
           command: |
@@ -66,7 +72,8 @@ jobs:
   test:
     <<: *defaults
     steps:
-      - run: python3 -m venv env
+      - attach_workspace:
+          at: /tmp/env
       - run:
           name: Tests
           command: |
