@@ -62,7 +62,7 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: /tmp/env
+          at: env
       - run:
           name: Linting
           command: |
@@ -73,7 +73,7 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: /tmp/env
+          at: env
       - run:
           name: Tests
           command: |
@@ -83,7 +83,8 @@ jobs:
   deploy:
     <<: *defaults
     steps:
-      - run: python3 -m venv env
+      - attach_workspace:
+          at: env
       - run:
           name: Fake deploy
           command: echo "Hello World"
