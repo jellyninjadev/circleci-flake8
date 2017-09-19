@@ -42,9 +42,9 @@ jobs:
             autoflake --in-place -r --remove-all-unused-imports --remove-unused-variables circleci_pep8
 
       - persist_to_workspace:
-          root: /tmp/env
+          root: env
           paths:
-            - env/*
+            - .
 
       # - deploy:
       #     name: Deploy master in sequential workflow
