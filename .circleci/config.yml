@@ -9,7 +9,7 @@ jobs:
           keys:
           - v1-dependencies-{{ checksum "requirements.txt" }}
       - run:
-          name: Install hatch and flake
+          name: Initialize virtual environment
           command: |
             python3 -m venv env
             . env/bin/activate
@@ -53,12 +53,32 @@ jobs:
           path: test-reports
           destination: test-reports
 
+      # - deploy:
+      #     name: Deploy master
+      #     command: |
+      #       if [ "${CIRCLE_BRANCH}" == master ]; then
+      #         . env/bin/activate
+      #         echo "Deploying to aws"
+      #       else
+      #         echo "Not master to deploying"
+      #       fi
+
+  deploy:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - run:
+        name: HelloWorld
+        command: echo "Hello World"
+workflows:
+  version: 2
+  dev:
+    jobs:
+      - build
       - deploy:
-          name: Deploy master
-          command: |
-            if [ "${CIRCLE_BRANCH}" == master ]; then
-              . env/bin/activate
-              echo "Deploying to aws"
-            else
-              echo "Not master to deploying"
-            fi
+        requires:
+          - build
+        filters:
+          branches:
+            only:
+              - master
