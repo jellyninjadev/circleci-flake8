@@ -68,8 +68,8 @@ jobs:
       - image: circleci/python:3.6.1
     steps:
       - run:
-        name: HelloWorld
-        command: echo "Hello World"
+          name: Fake deploy
+          command: echo "Hello World"
 workflows:
   version: 2
   dev:
